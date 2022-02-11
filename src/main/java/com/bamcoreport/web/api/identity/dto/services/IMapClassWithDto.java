@@ -1,7 +1,12 @@
 package com.bamcoreport.web.api.identity.dto.services;
 
+import com.bamcoreport.web.api.identity.dto.model.UserDto;
+import com.bamcoreport.web.api.identity.entities.User;
+
 import java.util.Collection;
 import java.util.List;
+import org.modelmapper.*;
+
 
 public interface IMapClassWithDto<E,D> {
 

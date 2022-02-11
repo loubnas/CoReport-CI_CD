@@ -1,14 +1,23 @@
 package com.bamcoreport.web.api.identity.entities;
 
+import com.bamcoreport.web.api.identity.dto.model.UserDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+@Data
 @Entity
-@Table(name = "group_")
+@Table(name = "groupe")
+@ToString
 public class Group implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -17,10 +26,6 @@ public class Group implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenantid")
-    private Tenant tenantId;
 
     @Column(name = "name", length = 125)
     private String name;
@@ -34,8 +39,9 @@ public class Group implements Serializable {
     @Column(name = "description",columnDefinition="TEXT")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "createdby")
+
+    @ManyToOne()
+    @JoinColumn(name = "createdby",referencedColumnName = "id",  updatable = false)
     private User createdBy;
 
     @CreationTimestamp
@@ -46,106 +52,13 @@ public class Group implements Serializable {
     @Column(name = "lastupdate")
     private LocalDateTime lastUpdate;
 
-    public Group(){
 
-    }
 
-    public Group(Long id, Tenant tenantId, String name, String parentPath, String displayName, String description, User createdBy, LocalDateTime creationDate, LocalDateTime lastUpdate) {
-        this.id = id;
-        this.tenantId = tenantId;
-        this.name = name;
-        this.parentPath = parentPath;
-        this.displayName = displayName;
-        this.description = description;
-        this.createdBy = createdBy;
-        this.creationDate = creationDate;
-        this.lastUpdate = lastUpdate;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "groupId")
+    private List<ProfileMember> profileMembers=new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "groupId")
+    private List<UserMembership> userMemberships=new ArrayList<>();
 
-    public Tenant getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(Tenant tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getParentPath() {
-        return parentPath;
-    }
-
-    public void setParentPath(String parentPath) {
-        this.parentPath = parentPath;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(LocalDateTime lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    @Override
-    public String toString() {
-        return "Group{" +
-                "id=" + id +
-                ", tenantId=" + tenantId +
-                ", name='" + name + '\'' +
-                ", parentPath='" + parentPath + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", description='" + description + '\'' +
-                ", createdBy=" + createdBy +
-                ", creationDate=" + creationDate +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
 }

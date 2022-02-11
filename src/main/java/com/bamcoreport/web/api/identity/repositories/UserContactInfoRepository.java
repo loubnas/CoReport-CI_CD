@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface UserContactInfoRepository extends JpaRepository<UserContactInfo,Long> {
 
-    List<UserContactInfo> findAllBy();
+
 }

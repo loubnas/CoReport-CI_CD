@@ -1,15 +1,30 @@
 package com.bamcoreport.web.api.identity.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+@Data
 @Entity
-@Table(name = "user_")
+@Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+
+
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,28 +34,27 @@ public class User implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenantid")
-    private Tenant tenantId;
-
     @JsonIgnore
     @OneToOne(targetEntity = UserContactInfo.class, mappedBy = "userId")
     private UserContactInfo userContactInfo;
 
-    @Column(name = "enabled", columnDefinition = "boolean default false")
-    private boolean enabled;
+    @Column(nullable = true, name = "enabled", columnDefinition = "boolean default false")
+    private Boolean enabled;
 
     @Column(name = "username")
     private String username;
 
+
     @Column(name = "password", length = 60)
     private String password;
+
 
     @Column(name = "firstname")
     private String firstname;
 
     @Column(name = "lastname")
     private String lastname;
+
 
     @Column(name = "title", length = 50)
     private String title;
@@ -52,9 +66,17 @@ public class User implements Serializable {
     @JoinColumn(name = "manageruserid")
     private User managerUserId;
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "managerUserId")
+    private List<User> managerUsers=new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createdby")
     private User createdBy;
+
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "createdBy")
+    private List<User> createdUsers=new ArrayList<>();
+
 
     @CreationTimestamp
     @Column(name = "creationdate")
@@ -64,156 +86,37 @@ public class User implements Serializable {
     @Column(name = "lastupdate")
     private LocalDateTime lastUpdate;
 
-    public User(){
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "createdBy")
+    private List<Role> roles=new ArrayList<>();
 
-    }
 
-    public User(Long id, Tenant tenantId,UserContactInfo userContactInfo, boolean enabled, String username, String password, String firstname, String lastname, String title, String jobTitle, User managerUserId, User createdBy, LocalDateTime creationDate, LocalDateTime lastUpdate) {
-        this.id = id;
-        this.tenantId = tenantId;
-        this.userContactInfo = userContactInfo;
-        this.enabled = enabled;
-        this.username = username;
-        this.password = password;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.title = title;
-        this.jobTitle = jobTitle;
-        this.managerUserId = managerUserId;
-        this.createdBy = createdBy;
-        this.creationDate = creationDate;
-        this.lastUpdate = lastUpdate;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "createdBy")
+    private List<Group> groups =new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "userId")
+    private List<ProfileMember> profileMembers=new ArrayList<>();
 
-    public Tenant getTenantId() {
-        return tenantId;
-    }
 
-    public void setTenantId(Tenant tenantId) {
-        this.tenantId = tenantId;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "userId")
+    private List<UserMembership> userMemberships=new ArrayList<>();
 
-    public UserContactInfo getUserContactInfo() {
-        return userContactInfo;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "assignedBy")
+    private List<UserMembership> assignebyUserMemberships=new ArrayList<>();
 
-    public void setUserContactInfo(UserContactInfo userContactInfo) {
-        this.userContactInfo = userContactInfo;
-    }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "createdBy")
+    private List<Profile> profiles=new ArrayList<>();
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "lastUpdateBy")
+    private List<Profile> lastUpdateByProfiles=new ArrayList<>();
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
-    public String getFirstname() {
-        return firstname;
-    }
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "TakenBy")
+    private List<Rejet> TakenBy=new ArrayList<>();
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
 
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getJobTitle() {
-        return jobTitle;
-    }
-
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
-
-    public User getManagerUserId() {
-        return managerUserId;
-    }
-
-    public void setManagerUserId(User managerUserId) {
-        this.managerUserId = managerUserId;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(LocalDateTime lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", tenantId=" + tenantId +
-                ", userContactInfo=" + userContactInfo +
-                ", enabled=" + enabled +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", title='" + title + '\'' +
-                ", jobTitle='" + jobTitle + '\'' +
-                ", managerUserId=" + managerUserId +
-                ", createdBy=" + createdBy +
-                ", creationDate=" + creationDate +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
 }

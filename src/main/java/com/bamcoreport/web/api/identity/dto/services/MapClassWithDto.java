@@ -1,5 +1,7 @@
 package com.bamcoreport.web.api.identity.dto.services;
 
+import com.bamcoreport.web.api.identity.dto.model.UserDto;
+import com.bamcoreport.web.api.identity.entities.User;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -51,4 +53,5 @@ public class MapClassWithDto<E, D> implements IMapClassWithDto<E, D> {
 
         return dtoList.stream().map(dto -> convertToEntity(dto, outCLass)).collect(Collectors.toList());
     }
+
 }
