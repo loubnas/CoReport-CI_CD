@@ -18,7 +18,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class IdentityApplication {
 
 	public static void main(String[] args) {
-				SpringApplication.run(IdentityApplication.class, args);
+		System.out.print("Identity Start.");
+		SpringApplication.run(IdentityApplication.class, args);
 	}
 
 	@Bean
