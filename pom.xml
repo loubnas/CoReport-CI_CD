@@ -15,6 +15,7 @@
 	<description>Identity API - Bridge users BAM Correction Report API</description>
 	<properties>
 		<java.version>11</java.version>
+		<start-class>com.bamcoreport.web.api.identity.IdentityApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -170,6 +171,8 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+		<finalName>identity</finalName>
 	</build>
 
 </project>
